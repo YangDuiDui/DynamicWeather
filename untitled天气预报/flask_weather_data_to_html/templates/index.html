@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史天气</title>
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+{# 这里是主DIV #}
+    <div class="container" id="didian">
+    <form action="" method="post">
+
+        <nav class="navbar navbar-expand-sm bg-info navbar-dark">
+            {# Logo #}
+            <a class="navbar-brand" href="/">历史天气</a>
+
+            {# 标题 #}
+            <ul class="navbar-nav">
+                {# 字幕#}
+                <li class="nav-item">
+                    <div style="width: 460px;">
+
+                    </div>
+                </li>
+
+                {# 地点下拉框#}
+                <li class="nav-item">
+                    <div id="id1">
+                        <select class="form-control" style="width: 140px">
+                            <option value="咸阳">请选择地址</option>
+                            {% for i in results %}
+                                <option value="{{ i.city }}">{{ i.city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+
+                {# 年份下拉框#}
+                <li class="nav-item">
+                    <div id="id2">
+                        <select class="form-control" style="width: 140px">
+                            <option value="2017">请选择年份</option>
+                            <option value="2017">2017年</option>
+                            <option value="2017">2018年</option>
+                        </select>
+                    </div>
+                </li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+
+                {# 月份下拉框#}
+                <li class="nav-item">
+                    <div id="id3">
+                        <select class="form-control" style="width: 140px">
+                            <option value="01">请选择月份</option>
+                            <option value="01">1月</option>
+                            <option value="02">2月</option>
+                            <option value="03">3月</option>
+                            <option value="04">4月</option>
+                            <option value="05">5月</option>
+                            <option value="06">6月</option>
+                            <option value="07">7月</option>
+                            <option value="08">8月</option>
+                            <option value="09">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </form>
+
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>城市</th>
+                <th>日期</th>
+                <th>天气</th>
+                <th>最高温度</th>
+                <th>最低温度</th>
+                <th>风力</th>
+                <th>持续风向</th>
+            </tr>
+            </thead>
+            <tbody id="tbody1">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+    <script>
+        $(function(){
+            $(() => {
+                $('#didian select').change(() => {
+                    var address = $('#id1 select').val();
+                    var year = $('#id2 select').val();
+                    var months = $('#id3 select').val();
+                    $("#tbody1").empty();
+
+                    $.ajax({
+                        type: "post",
+                        url: "/login/",
+
+                        data: {
+                            'address': address,
+                            'year': year,
+                            'months': months
+                        },
+
+                        dataType: "json",
+
+                        success: function (data) {
+<!--                            控制台打印选择的数据-->
+                            console.log(data.weather_list);
+<!--                                去循环插入数据到tbody标签中-->
+                            data.weather_list.forEach(function (a) {
+                                $("tbody").append(
+                                    "<tr>" +
+                                    "<td>" + a.city + "</td>" +
+                                    "<td>" + a.ymd + "</td>" +
+                                    "<td>" + a.tianqi + "</td>" +
+                                    "<td>" + a.bWendu + "</td>" +
+                                    "<td>" + a.yWendu + "</td>" +
+                                    "<td>" + a.fenli + "</td>" +
+                                    "<td>" + a.fenxiang + "</td>" +
+                                    "</tr>"
+                                )
+                            })
+                        }
+                    });
+                });
+            });
+        })
+    </script>
+</body>
+</html>
